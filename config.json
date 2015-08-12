@@ -1,0 +1,20 @@
+/* Configuarion File. All the configuation related to export should be mentioned here */
+{
+    "mcs": {
+        "toolingUrl": "http://unit23587.oracleads.com:7101/internal-tools/",
+        "userId": "ErinE"
+    },
+    "mbe": {
+        "name": "Banking",
+        "version": "1.0",
+        "exportUsers": "true",
+        "exportClientApps": "true",
+        "apiSourceDir": "/u01/banking/mcs/banking",
+        "outputDir": "./Banking/Eoutput",
+        "connectors": [
+                        {"name": "GetCustomerSalesCloud", "version": "1.0"},
+                        {"name": "DBConnector", "version": "1.0"}
+                      ]
+ 
+    }
+}
