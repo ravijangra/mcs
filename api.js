@@ -1,4 +1,4 @@
-/*  Exports the MobileBackendn and associated APIs, Clients, Users basis the configuration mentioned in the configuration file config.json
+/*  Exports the MobileBackend and associated APIs, Clients, Users basis the configuration mentioned in the configuration file config.json
     config.json file must be passed while running this program
     Output is in JSON format and the output files are saved in the directories mentioned in configuration file
 */
