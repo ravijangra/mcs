@@ -1,4 +1,3 @@
-/* Configuarion File. All the configuation related to export should be mentioned here */
 {
     "mcs": {
         "toolingUrl": "http://unit23587.oracleads.com:7101/internal-tools/",
