@@ -1,4 +1,4 @@
-/*  Exports the MobileBackend and associated APIs, Clients, Users basis the configuration mentioned in the configuration file config.json
+/*  Exports the MobileBackendn and associated APIs, Clients, Users basis the configuration mentioned in the configuration file config.json
     config.json file must be passed while running this program
     Output is in JSON format and the output files are saved in the directories mentioned in configuration file
 */
@@ -17,6 +17,8 @@ var exportUsers;
 var mbe_id;
 var exportClientApps;
 
+var APIStringUMSRoles = '/envs/dev/ums';
+var APIStringConnectors = '/envs/dev/asset';
 var APIStringAsset = '/envs/dev/asset/mobilebackends/';
 var APIStringUMS = '/envs/dev/ums/mobilebackends/';
 	
@@ -24,7 +26,9 @@ var mbefileName = 'mbe.json';
 var clientfileName = 'clients.json';
 var apisfileName = 'API/apis.json';
 var usersfileName = 'users.json';
-var mbefile,clientfile,apisfile,usersfile;
+var rolesfileName = 'roles.json';
+var connectorsfileName = 'Connectors/connectors.json';
+var mbefile,clientfile,apisfile,usersfile, connectorsfile, rolesfile;
 var outputDir;
 
 
@@ -63,11 +67,11 @@ var outputDir;
             mbe_id = JSON.parse(body).items[0].id;
             var uri = utils.formURL(config, APIStringAsset, mbe_id, '/apis/');
             var apisAPIoptions = utils.formOptions(uri, 'GET',userId);
-            //console.log('APIs options are ' + JSON.stringify(apisAPIoptions));
+            
 
             /* Get API based on MBE */
             request(apisAPIoptions, function(error, res, body){
-            if (error) {console.log("Error retrieving API List for MBE " + error);}
+            if (error) {console.log("Error retrieving API List for MBE :" + error);}
             if (!error && res.statusCode == 200) {
                 console.log("APIs list exported to apis.json successfully!");
               }
@@ -81,7 +85,7 @@ var outputDir;
 
                 // get Users based on MBE 
                 request(usersAPIoption, function(error,res,body){
-                if (error){ console.log("Error retrieving users for MBE" + error); }
+                if (error || res.statusCode != 200){ console.log("Error retrieving users for MBE :" + error); }
                     if ( !error && res.statusCode == 200 ) {
                         console.log("Users list exported to users.json successfully!");
                     }
@@ -96,12 +100,43 @@ var outputDir;
 
               // get Clients based on MBE 
               request(clientAPIoption, function(error,res,body){
-                if (error){ console.log("Error retrieving clients for MBE" + error); }
+                if (error || res.statusCode != 200){ console.log("Error retrieving clients for MBE :" + error); }
                     if ( !error && res.statusCode == 200 ) {
                         console.log("Clients list exported to clients.json successfully!");
                     }
                 }).pipe(clientfile);
         }
+              
+              /* Create connectors */
+        
+              connectorsfile = fs.createWriteStream(outputDir + '/' + connectorsfileName);
+              uri = utils.formURL(config, APIStringConnectors, 0 , '/connectors');
+              var connectorsAPIoption = utils.formOptions(uri,'GET',userId);
+                            
+              // get Connectors 
+              request(connectorsAPIoption, function(error,res,body){
+                if (error || res.statusCode != 200){ console.log("Error retrieving connectors list: " + error); }
+                    if ( !error && res.statusCode == 200 ) {
+                        console.log("Connectors list exported to connectors.json successfully!");
+                    }
+                }).pipe(connectorsfile);
+              
+               /* Create roles */
+        
+              rolesfile = fs.createWriteStream(outputDir + '/' + rolesfileName);
+              uri = utils.formURL(config, APIStringUMSRoles, 0 , 'roles');
+              var rolesAPIoption = utils.formOptions(uri,'GET',userId);
+              
+              // get Roles 
+              request(rolesAPIoption, function(error,res,body){
+                if (error || res.statusCode != 200){ console.log("Error retrieving roles : " + error); }
+                    if ( !error && res.statusCode == 200 ) {
+                        console.log("roles list exported to roles.json successfully!");
+                    }
+                }).pipe(rolesfile);
+             
+             
+              
     }}).pipe(mbefile);
 
 };
